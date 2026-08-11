@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  webserver:
+    image: sonnyaaa/neurox:v1
+    container_name: webserver
+    ports:
+      - "8081:80"
+    volumes:
+      - site-data:/usr/share/nginx/html
+    restart: always
+
+  container-backup:
+    image: alpine
+    container_name: container-backup
+    command: sleep 3600
+    volumes:
+      - site-data:/data
+    restart: always
+
+volumes:
+  site-data:

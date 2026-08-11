@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ro" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echipa de Robotică | NeuroX #32744</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            'navy-dark': '#192053',
+            'navy-blue': '#1e295d',
+            'custom-blue': '#6ea1d7', /* Albastru deschis fundal */
+            'azure-blue': '#00a8ff',  /* Albastru AZUR pentru scris și detalii */
+            'brand-blue': '#192053',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ===== ANIMATIONS ===== */
+    html { scroll-behavior: smooth; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(35px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-up {
+      animation: fadeUp .9s cubic-bezier(.2,.7,.2,1) both;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== HERO SLIDER ===== */
+    .hero-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+    }
+
+    .hero-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero-slide-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(25, 32, 83, 0.85);
+    }
+
+    .hero-dots button {
+      width: 9px;
+      height: 9px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,.45);
+      transition: all .3s ease;
+    }
+
+    .hero-dots button.active {
+      width: 30px;
+      background: #ffffff;
+    }
+
+    .hero-arrow {
+      opacity: 0;
+      transition: opacity .3s ease, transform .3s ease, background .3s ease;
+    }
+
+    #hero:hover .hero-arrow {
+      opacity: 1;
+    }
+
+    .hero-arrow:hover {
+      transform: scale(1.08);
+      background: rgba(25,32,83,.9);
+    }
+
+    .interactive-card {
+      transition: transform .35s ease, box-shadow .35s ease;
+    }
+
+    .interactive-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(25,32,83,.2);
+    }
+
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 2px;
+      background: #192053;
+      transition: width .3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Cards */
+    .sponsor-card {
+      transition: transform .3s ease, border-color .3s ease;
+    }
+
+    .sponsor-card:hover {
+      transform: translateY(-4px);
+      border-color: #192053 !important;
+    }
+
+    /* ===== VALORILE ECHIPEI ===== */
+    .value-bar {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .department-card,
+    .award-card {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+
+    .department-card.is-visible,
+    .award-card.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-custom-blue text-navy-dark font-sans relative overflow-x-hidden">
+
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-navy-dark/10 z-50 px-6 lg:px-12 py-4 flex justify-between items-center shadow-md">
+    <a href="#" class="text-xl font-black text-navy-dark tracking-wider flex items-center gap-2">
+      <span class="w-3 h-3 bg-navy-dark rotate-45 inline-block"></span>
+      NEUROX <span class="text-navy-blue font-bold">#32744</span>
+    </a>
+    
+    <div class="hidden lg:flex space-x-6 font-bold text-sm text-navy-dark">
+      <a href="#despre" class="nav-link hover:text-navy-blue transition">Despre Noi</a>
+      <a href="#departamente" class="nav-link hover:text-navy-blue transition">Departamente</a>
+      <a href="#premii" class="nav-link hover:text-navy-blue transition">Premii</a>
+      <a href="#sponsori" class="nav-link hover:text-navy-blue transition">Sponsori</a>
+      <a href="#contact" class="nav-link hover:text-navy-blue transition">Contact & Locație</a>
+      <a href="#sponsorizeaza" class="nav-link hover:text-navy-blue transition">Sponsorizează-ne!</a>
+    </div>
+
+    <a href="#sponsorizeaza" class="bg-navy-dark hover:bg-navy-blue text-white font-bold px-5 py-2.5 rounded-lg transition shadow-md text-sm">
+      Sponsorizează
+    </a>
+  </nav>
+
+  <!-- HERO SECTION / DEPARTMENT SLIDER -->
+  <section id="hero" class="relative min-h-screen flex items-end justify-start pt-24 pb-24 px-6 md:px-20 bg-navy-dark overflow-hidden">
+
+    <!-- SLIDES -->
+    <div id="heroSlides" class="absolute inset-0 z-0">
+
+      <!-- SLIDE 1 -->
+      <div class="hero-slide active bg-navy-dark" data-slide="0">
+        <img src="echipa.jpg" alt="Echipa NeuroX">
+        <div class="hero-slide-overlay"></div>
+      </div>
+
+     <div class="hero-slide bg-navy-dark" data-slide="1">
+    <img src="programare.jpg" alt="Departament programare">
+    <div class="hero-slide-overlay"></div>
+  </div>
+
+  <!-- SLIDE 3 — MECANICĂ -->
+  <div class="hero-slide bg-navy-dark" data-slide="2">
+    <img src="mecanica.jpg" alt="Departament mecanică">
+    <div class="hero-slide-overlay"></div>
+  </div>
+
+  <!-- SLIDE 4 — MARKETING -->
+  <div class="hero-slide bg-navy-dark" data-slide="3">
+    <img src="marketing.jpg" alt="Departament marketing">
+    <div class="hero-slide-overlay"></div>
+  </div>
+
+</div>
+
+    <!-- Original first-slide content -->
+    <div class="hero-content relative z-10 max-w-3xl" data-content="0">
+      <div class="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-widest">
+        <span class="w-2 h-2 bg-azure-blue rounded-full animate-pulse"></span>
+        FTC Robotics • #32744
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-black text-white leading-tight uppercase tracking-wide drop-shadow-lg">
+        Coding Our Path <br>
+        <span class="text-azure-blue">
+          Discovering the future
+        </span>
+      </h1>
+
+      <p class="text-slate-200 text-lg mt-4 max-w-xl font-medium drop-shadow">
+        Echipa de robotică a Liceului Teoretic „Alexandru Ioan Cuza”. Împreună construim viitorul!
+      </p>
+
+      <div class="flex flex-wrap items-center gap-4 mt-7">
+        <a href="#despre" class="bg-azure-blue hover:bg-white hover:text-navy-dark text-navy-dark font-bold px-6 py-3 rounded-xl transition duration-300 shadow-lg">
+          Descoperă echipa
+        </a>
+        <a href="#sponsorizeaza" class="border border-white/40 hover:bg-white hover:text-navy-dark text-white font-bold px-6 py-3 rounded-xl transition duration-300 backdrop-blur-sm">
+          Devino sponsor!
+        </a>
+      </div>
+    </div>
+
+    <!-- Programming -->
+    <div class="hero-content hidden relative z-10 max-w-3xl" data-content="1">
+      <span class="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full border border-azure-blue/40 bg-azure-blue/10 text-azure-blue text-xs font-black uppercase tracking-widest">
+        DEPARTAMENT • PROGRAMARE
+      </span>
+      <h2 class="text-5xl sm:text-7xl font-black text-white uppercase leading-none">
+        Code that <span class="text-azure-blue">moves</span> the robot.
+      </h2>
+      <p class="text-slate-200 text-lg mt-6 max-w-2xl leading-relaxed">
+        Departamentul de programare se ocupă de codul care rulează pe robot, asigurând o autonomie cat mai bună.
+        Echipa capătă competențe în <strong>Java</strong> prin sesiuni de training, cursuri și testare constantă.
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 mt-7 max-w-2xl">
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Java</div>
+          <div class="text-white/70 text-xs mt-1">training & cursuri</div>
+        </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Autonomie</div>
+          <div class="text-white/70 text-xs mt-1">cod eficient</div>
+        </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Testing</div>
+          <div class="text-white/70 text-xs mt-1">testare continuă</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mechanics -->
+    <div class="hero-content hidden relative z-10 max-w-3xl" data-content="2">
+      <span class="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full border border-azure-blue/40 bg-azure-blue/10 text-azure-blue text-xs font-black uppercase tracking-widest">
+        DEPARTAMENT • MECANICĂ
+      </span>
+      <h2 class="text-5xl sm:text-7xl font-black text-white uppercase leading-none">
+        From <span class="text-azure-blue">CAD</span> to reality.
+      </h2>
+      <p class="text-slate-200 text-lg mt-6 max-w-2xl leading-relaxed">
+        Departamentul de mecanică se asigură că robotul ia forma modelului CAD, care stă la baza construcției.
+        Membrii își dezvoltă abilitățile mecanice prin asamblarea robotului si gandirea creativa.
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 mt-7 max-w-2xl">
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Fusion</div>
+          <div class="text-white/70 text-xs mt-1">CAD & design</div>
+        </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Assembly</div>
+          <div class="text-white/70 text-xs mt-1">construcția robotului</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marketing -->
+    <div class="hero-content hidden relative z-10 max-w-3xl" data-content="3">
+      <span class="inline-flex items-center gap-2 mb-5 px-4 py-2 rounded-full border border-azure-blue/40 bg-azure-blue/10 text-azure-blue text-xs font-black uppercase tracking-widest">
+        DEPARTAMENT • MARKETING & PR
+      </span>
+      <h2 class="text-5xl sm:text-7xl font-black text-white uppercase leading-none">
+        Build the <span class="text-azure-blue">impact.</span>
+      </h2>
+      <p class="text-slate-200 text-lg mt-6 max-w-2xl leading-relaxed">
+        Marketingul transformă munca echipei într-o poveste care ajunge la comunitate: promovare, social media,
+        evenimente, branding, outreach și atragerea sponsorilor.
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 mt-7 max-w-2xl">
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Outreach</div>
+          <div class="text-white/70 text-xs mt-1">școli & comunitate</div>
+        </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Branding</div>
+          <div class="text-white/70 text-xs mt-1">identitate vizuală</div>
+        </div>
+        <div class="rounded-xl border border-white/15 bg-white/10 backdrop-blur p-4">
+          <div class="text-azure-blue font-black text-xl">Sponsors</div>
+          <div class="text-white/70 text-xs mt-1">parteneriate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrows -->
+    <button id="heroPrev" aria-label="Slide anterior"
+      class="hero-arrow absolute z-20 left-5 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-2xl">
+      &#10094;
+    </button>
+
+    <button id="heroNext" aria-label="Slide următor"
+      class="hero-arrow absolute z-20 right-5 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-2xl">
+      &#10095;
+    </button>
+
+    <div id="heroDots" class="hero-dots absolute z-20 bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2"></div>
+  </section>
+
+  <!-- DESPRE NOI -->
+  <section id="despre" class="py-24 px-6 max-w-6xl mx-auto reveal">
+    <div class="text-center mb-16">
+      <span class="text-navy-dark font-black uppercase tracking-wider text-sm">Despre Noi</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-navy-dark mt-1">Cine suntem & misiunea noastră</h2>
+      <div class="w-16 h-1 bg-navy-dark mx-auto mt-3"></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
+      <div class="bg-white p-8 rounded-2xl border-l-4 border-navy-dark shadow-xl">
+        <h3 class="text-2xl font-black text-navy-dark mb-4 flex items-center gap-2">
+          <span class="w-3 h-3 bg-navy-dark rotate-45 inline-block"></span>
+          Cine suntem
+        </h3>
+        <p class="text-slate-700 leading-relaxed text-base">
+          Bun venit la <strong class="text-navy-dark">NeuroX</strong>! Suntem echipa de robotică reprezentanta a Liceului Teoretic „Alexandru Ioan Cuza” din București și participăm anual la competiția First Tech Challenge. Credem că determinarea și ambiția ne pot propulsa. Chiar astfel a luat naștere NeuroX – o echipă formata din oameni puternici, uniti de o viziune comună. Ești gata să alaturi povestii noastre?
+        </p>
+      </div>
+
+      <div class="bg-white p-8 rounded-2xl border-l-4 border-navy-blue shadow-xl">
+        <h3 class="text-2xl font-black text-navy-dark mb-4 flex items-center gap-2">
+          <span class="w-3 h-3 bg-navy-blue rotate-45 inline-block"></span>
+          Misiunea noastră
+        </h3>
+        <p class="text-slate-700 leading-relaxed text-base">
+        Misiunea noastră este popularizarea domeniilor STEAM prin dezvoltarea unor inițiative cu un impact semnificativ asupra societății. Ne propunem să creăm soluții ingineresti performante și să inspirăm generațiile viitoare să îmbrățișeze domeniile tehnologice. Mai exact, dorim să le oferim tinerilor posibilitatea de a se dezvolta.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- GALERIE POZE DUPĂ CINE SUNTEM -->
+<div class="my-12 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+  
+  <!-- Poza 1 -->
+  <div class="rounded-2xl overflow-hidden shadow-xl border-2 border-navy-blue">
+    <img src="confer.jpg" alt="Echipa NeuroX 1" class="w-full h-64 object-cover">
+  </div>
+
+  <!-- Poza 2 -->
+  <div class="rounded-2xl overflow-hidden shadow-xl border-2 border-navy-blue">
+    <img src="lala.jpg" alt="Echipa NeuroX 2" class="w-full h-64 object-cover">
+  </div>
+</div>
+
+    <!-- Valorile Echipei cu 6 Piloni -->
+    <div class="bg-navy-dark text-white p-8 sm:p-12 rounded-3xl shadow-2xl relative overflow-hidden">
+      <div class="text-center mb-10">
+        <span class="text-azure-blue font-bold uppercase tracking-wider text-xs">Principiile echipei</span>
+        <h3 class="text-2xl sm:text-3xl font-black mt-1">Valorile echipei NeuroX</h3>
+        <p class="text-slate-300 text-sm mt-2">Dedicarea noastră măsurată în impact, performanță și dezvoltare continuă.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 max-w-5xl mx-auto">
+        <div>
+          <div class="flex justify-between font-bold text-sm mb-2">
+            <span>Dezvoltare</span>
+            <span class="text-azure-blue">95%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 border border-slate-700">
+            <div class="bg-azure-blue h-full rounded-full value-bar" style="width: 95%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between font-bold text-sm mb-2">
+            <span>Inovație</span>
+            <span class="text-azure-blue">92%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 border border-slate-700">
+            <div class="bg-azure-blue h-full rounded-full value-bar" style="width: 92%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between font-bold text-sm mb-2">
+            <span>Impact</span>
+            <span class="text-azure-blue">90%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 border border-slate-700">
+            <div class="bg-azure-blue h-full rounded-full value-bar" style="width: 90%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between font-bold text-sm mb-2">
+            <span>Muncă în echipă</span>
+            <span class="text-azure-blue">98%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 border border-slate-700">
+            <div class="bg-azure-blue h-full rounded-full value-bar" style="width: 98%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between font-bold text-sm mb-2">
+            <span>Distracție</span>
+            <span class="text-azure-blue">94%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 border border-slate-700">
+            <div class="bg-azure-blue h-full rounded-full value-bar" style="width: 94%;"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between font-bold text-sm mb-2">
+            <span>Învățare</span>
+            <span class="text-azure-blue">96%</span>
+          </div>
+          <div class="w-full bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 border border-slate-700">
+            <div class="bg-azure-blue h-full rounded-full value-bar" style="width: 96%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPARTAMENTE -->
+  <section id="departamente" class="py-20 px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-black text-navy-dark">Departamentele noastre</h2>
+        <p class="text-navy-dark/80 font-medium mt-2">Structura fiecărui departament:</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <!-- Card 1: CAD -->
+        <div class="interactive-card bg-white rounded-2xl border-2 border-navy-blue shadow-lg overflow-hidden relative department-card">
+          <div class="bg-navy-dark p-4 text-white font-black text-xl flex justify-between items-center">
+            <span>PROIECTARE 3D</span>
+          </div>
+          <div class="p-6">
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Robotul este proiectat în programe CAD, urmand sa fie asamblat si optimizat. Membrii acestui departament se ocupa si cu printarea 3D a pieselor.
+            </p>
+<div class="mt-6 rounded-xl overflow-hidden shadow-md border border-azure-blue/30 h-48">
+          <img src="cad.jpg" alt="Proiectare CAD" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+        </div>
+      </div>
+     </div>
+
+        <!-- Card 2: Mecanică -->
+        <div class="interactive-card bg-white rounded-2xl border-2 border-navy-blue shadow-lg overflow-hidden relative department-card">
+          <div class="bg-navy-blue p-4 text-white font-black text-xl flex justify-between items-center">
+            <span>MECANICĂ</span>
+          </div>
+          <div class="p-6">
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Construcția fizică a robotului, asamblarea șasiului si îmbunătătirea fiecarei iteratii se întamplă la departamentul de mecanică.
+            </p>
+<div class="mt-6 rounded-xl overflow-hidden shadow-md border border-azure-blue/30 h-48">
+          <img src="mec.jpg" alt="Departament mecanică" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+        </div>
+      </div>
+    </div>
+
+        <!-- Card 3: Software -->
+        <div class="interactive-card bg-white rounded-2xl border-2 border-navy-blue shadow-lg overflow-hidden relative department-card">
+          <div class="bg-navy-dark p-4 text-white font-black text-xl flex justify-between items-center">
+            <span>PROGRAMARE</span>
+          </div>
+          <div class="p-6">
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Cu o viziune largă, programatorii nostri reusesc sa dea viată robotului, asigurandu-i o autonomie eficienta in timpul meciurilor competitionale.
+            </p>
+<div class="mt-6 rounded-xl overflow-hidden shadow-md border border-azure-blue/30 h-48">
+          <img src="prog.jpg" alt="Departament Software" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+        </div>
+      </div>
+    </div>
+
+        <!-- Card 4: Marketing -->
+        <div class="interactive-card bg-white rounded-2xl border-2 border-navy-blue shadow-lg overflow-hidden relative department-card">
+          <div class="bg-navy-blue p-4 text-white font-black text-xl flex justify-between items-center">
+            <span>MARKETING & PR</span>
+          </div>
+          <div class="p-6">
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Atragere de fonduri, gestionarea rețelelor sociale, realizarea caietului tehnic și promovarea valorilor STEM sunt realizate la departamentul de MARKETING & PR.
+            </p>
+<div class="mt-6 rounded-xl overflow-hidden shadow-md border border-azure-blue/30 h-48">
+          <img src="mark.jpg" alt="Departament Marketing" class="w-full h-full object-cover hover:scale-105 transition duration-500">
+        </div>
+      </div>
+    </div>
+
+  </section>
+  
+<!-- PREMII -->
+<section id="premii" class="py-24 px-6 max-w-6xl mx-auto reveal">
+  <div class="text-center mb-16">
+    <span class="text-xs font-bold uppercase tracking-widest text-navy-dark">PALMARES</span>
+    <h2 class="text-3xl sm:text-4xl font-black text-navy-dark mt-1">Premii & distincții</h2>
+    <div class="w-16 h-1 bg-navy-dark mx-auto mt-3"></div>
+  </div>
+
+  <!-- GRILA PREMII FĂRĂ CHENARE -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center mb-16">
+    
+    <!-- PREMIU 1 -->
+    <div class="flex flex-col items-center">
+      <div class="text-6xl mb-4 transform hover:scale-110 transition duration-300">🏆</div>
+      <span class="text-xs font-bold text-navy-dark/70 uppercase tracking-wide">SEZONUL DECODE, REGIONALA BUCUREȘTI</span>
+      <h3 class="text-xl font-black text-navy-dark mt-1 mb-2">NATIE PRIN EDUCATIE Award / JUDGES' CHOICE 2nd Place</h3>
+      <p class="text-navy-dark/80 text-sm leading-relaxed max-w-xs">
+        Premiu acordat pentru performanta si progresul echipei.
+      </p>
+    </div>
+
+    <!-- PREMIU 2 -->
+    <div class="flex flex-col items-center">
+      <div class="text-6xl mb-4 transform hover:scale-110 transition duration-300">🥇</div>
+      <span class="text-xs font-bold text-navy-dark/70 uppercase tracking-wide">OGIS SCIENCE & BUSINESS FAIR</span>
+      <h3 class="text-xl font-black text-navy-dark mt-1 mb-2">3rd Place</h3>
+      <p class="text-navy-dark/80 text-sm leading-relaxed max-w-xs">
+        Recunoașterea unui proiect exceptional, demonstrand excelenta.
+      </p>
+    </div>
+
+    <!-- PREMIU 3 -->
+    <div class="flex flex-col items-center">
+      <div class="text-6xl mb-4 transform hover:scale-110 transition duration-300">⭐</div>
+      <span class="text-xs font-bold text-navy-dark/70 uppercase tracking-wide">TECHNOVATION GIRLS 2026</span>
+      <h3 class="text-xl font-black text-navy-dark mt-1 mb-2">Quarter Finalists</h3>
+      <p class="text-navy-dark/80 text-sm leading-relaxed max-w-xs">
+        Distincție acordată pentru impactul în comunitate prin dezvoltarea unei aplicatii mobile care rezolva o problema reala.
+      </p>
+    </div>
+
+<div class="md:col-span-3 flex flex-col items-center text-center">
+  <div class="text-6xl mb-4 transform hover:scale-110 transition duration-300">🏆</div>
+  <span class="text-xs font-bold text-navy-dark/70 uppercase tracking-wide">SEZONUL DECODE, SOUTH PERFORMANCE LEAGUE</span>
+  <h3 class="text-xl font-black text-navy-dark mt-1 mb-2">JUDGES' CHOICE</h3>
+  <p class="text-navy-dark/80 text-sm leading-relaxed max-w-xs">
+    Premiu acordat pentru progresul echipei.
+  </p>
+</div>
+
+  </div>
+
+  <!-- GALERIE POZE PREMII (Rămân jos, sub lista de premii) -->
+  <div class="my-10 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+    <div class="rounded-2xl overflow-hidden shadow-xl border-2 border-azure-blue bg-navy-dark">
+      <img src="premiu1.jpg" alt="Premiul 1 NeuroX" class="w-full h-72 object-cover hover:scale-105 transition duration-500">
+    </div>
+    <div class="rounded-2xl overflow-hidden shadow-xl border-2 border-azure-blue bg-navy-dark">
+      <img src="premiu2.jpg" alt="Premiul 2 NeuroX" class="w-full h-72 object-cover hover:scale-105 transition duration-500">
+    </div>
+  </div>
+
+</section>
+
+  <!-- SPONSORI -->
+  <section id="sponsori" class="py-20 px-6 reveal">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-black text-navy-dark">Sponsorii noștri</h2>
+      <p class="text-navy-dark/80 font-medium mt-2">Partenerii noștri de încredere care investesc în viitorul educației STEM:</p>
+    </div>
+
+    <!-- IMAGINEA SPONSORILOR FĂRĂ CHENAR ALB -->
+    <div class="flex justify-center items-center">
+      <img src="download.png" alt="Sponsori NeuroX" class="max-w-4xl w-full h-auto object-contain">
+    </div>
+  </div>
+</section>
+
+  <!-- SPONSORIZEAZĂ-NE! -->
+  <section id="sponsorizeaza" class="py-24 px-6 reveal">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <span class="text-navy-dark font-black uppercase tracking-wider text-sm">Alătură-te povestii noastre</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-navy-dark mt-1">Sponsorizează echipa NeuroX!</h2>
+        <div class="w-16 h-1 bg-navy-dark mx-auto mt-3"></div>
+        <p class="text-navy-dark font-medium mt-4 max-w-2xl mx-auto">
+          Susținerea ta financiară sau materială ne ajută să achiziționăm piese, echipamente de imprimare 3D și să acoperim costurile de deplasare la competiții.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Pachet Bronze -->
+        <div class="bg-white rounded-2xl border-2 border-navy-blue p-8 text-center hover:border-navy-dark transition shadow-lg">
+          <h3 class="text-xl font-black text-navy-dark mb-2">BRONZE</h3>
+          <p class="text-slate-500 text-sm mb-6">Susținător pasionat</p>
+          <ul class="text-left text-sm space-y-3 text-slate-700 mb-8">
+            <li class="flex items-center gap-2">✔ Logotip pe site-ul oficial</li>
+            <li class="flex items-center gap-2">✔ Mulțumiri pe rețelele sociale</li>
+            <li class="flex items-center gap-2">✔ Mențiune în caietul tehnic</li>
+          </ul>
+          <a href="#contact" class="inline-block w-full py-3 border-2 border-navy-dark text-navy-dark font-bold rounded-xl hover:bg-navy-dark hover:text-white transition">Alege pachetul</a>
+        </div>
+
+        <!-- Pachet Gold -->
+        <div class="bg-navy-dark text-white rounded-2xl border-2 border-white p-8 text-center shadow-2xl relative scale-105">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-azure-blue text-navy-dark text-xs font-black uppercase px-4 py-1 rounded-full">Popular</span>
+          <h3 class="text-2xl font-black mb-2">GOLD</h3>
+          <p class="text-slate-300 text-sm mb-6">Partener principal</p>
+          <ul class="text-left text-sm space-y-3 text-slate-200 mb-8">
+            <li class="flex items-center gap-2">✔ Logo de dimensiuni mari pe robot</li>
+            <li class="flex items-center gap-2">✔ Logo pe echipamentul echipei</li>
+            <li class="flex items-center gap-2">✔ Postări dedicate pe Social Media</li>
+            <li class="flex items-center gap-2">✔ Invitație la standul echipei</li>
+            <li class="flex items-center gap-2">✔ Mențiune în caietul tehnic</li>
+          </ul>
+          <a href="#contact" class="inline-block w-full py-3 bg-azure-blue text-navy-dark font-bold rounded-xl hover:bg-white hover:text-navy-dark transition">Alege pachetul</a>
+        </div>
+
+        <!-- Pachet Platinum -->
+        <div class="bg-white rounded-2xl border-2 border-navy-blue p-8 text-center hover:border-navy-dark transition shadow-lg">
+          <h3 class="text-xl font-black text-navy-dark mb-2">PLATINUM</h3>
+          <p class="text-slate-500 text-sm mb-6">Sponsor strategic</p>
+          <ul class="text-left text-sm space-y-3 text-slate-700 mb-8">
+            <li class="flex items-center gap-2">✔ Vizibilitate maximă pe robot & stand</li>
+            <li class="flex items-center gap-2">✔ Integrare în numele robotului/proiectului</li>
+            <li class="flex items-center gap-2">✔ Prezentări & workshop-uri dedicate</li>
+            <li class="flex items-center gap-2">✔ Drepturi complete de promovare B2B</li>
+            <li class="flex items-center gap-2">✔ Mențiune în caietul tehnic</li>
+          </ul>
+          <a href="#contact" class="inline-block w-full py-3 border-2 border-navy-dark text-navy-dark font-bold rounded-xl hover:bg-navy-dark hover:text-white transition">Alege pachetul</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT & GOOGLE MAPS -->
+  <section id="contact" class="py-20 bg-navy-dark text-white px-6 relative">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-black mb-4 text-white">Contactează-ne</h2>
+        <p class="text-slate-300 max-w-xl mx-auto font-medium">
+          Ești interesat să devii sponsor, partener sau membru? Scrie-ne un mesaj!
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Date de contact -->
+        <div class="space-y-6">
+          <div class="flex items-start gap-4 bg-navy-blue p-6 rounded-2xl border border-slate-700 shadow-sm">
+            <div class="p-3 bg-azure-blue text-navy-dark rounded-xl font-bold">📍</div>
+            <div>
+              <h4 class="font-bold text-lg text-white">Locația Noastră</h4>
+              <p class="text-slate-300 text-sm mt-1">
+                Liceul Teoretic „Alexandru Ioan Cuza”<br>
+                Aleea Barajul Dunării nr. 5, Sector 3, București
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 bg-navy-blue p-6 rounded-2xl border border-slate-700 shadow-sm">
+            <div class="p-3 bg-azure-blue text-navy-dark rounded-xl font-bold">✉️</div>
+            <div>
+              <h4 class="font-bold text-lg text-white">Email</h4>
+              <p class="text-slate-300 text-sm mt-1">neurox.cuza@gmail.ro</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 bg-navy-blue p-6 rounded-2xl border border-slate-700 shadow-sm">
+            <div class="p-3 bg-azure-blue text-navy-dark rounded-xl font-bold">🌐</div>
+            <div>
+              <h4 class="font-bold text-lg text-white">Social Media</h4>
+              <p class="text-slate-300 text-sm mt-1">Instagram: @neurox.cuza</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Maps Embed -->
+        <div class="w-full h-80 lg:h-96 rounded-2xl overflow-hidden border-2 border-slate-700 shadow-2xl">
+          <iframe 
+            class="w-full h-full border-0"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.626892305541!2d26.1558231!3d44.4203178!2m3!1f0!0f0!0f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b1fea3b13783b9%3A0x2db4f89d31d99fb3!2sLiceul%20Teoretic%20%22Alexandru%20Ioan%20Cuza%22!5e0!3m2!1sro!2sro!4v1700000000000!5m2!1sro!2sro" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-6 bg-slate-950 text-center text-xs text-slate-400">
+    <p>© 2026 NeuroX #32744. Liceul Teoretic „Alexandru Ioan Cuza” București. Toate drepturile rezervate.</p>
+  </footer>
+
+  <script>
+    // ===== HERO / DEPARTMENT SLIDER =====
+    const slides = Array.from(document.querySelectorAll('.hero-slide'));
+    const contents = Array.from(document.querySelectorAll('.hero-content'));
+    const dotsContainer = document.getElementById('heroDots');
+    const prevButton = document.getElementById('heroPrev');
+    const nextButton = document.getElementById('heroNext');
+
+    let currentSlide = 0;
+    let sliderTimer;
+
+    slides.forEach((_, index) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Mergi la slide-ul ${index + 1}`);
+      dot.addEventListener('click', () => {
+        showSlide(index);
+        restartSlider();
+      });
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = Array.from(dotsContainer.children);
+
+    function showSlide(index) {
+      currentSlide = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentSlide);
+      });
+
+      contents.forEach((content, i) => {
+        content.classList.toggle('hidden', i !== currentSlide);
+        if (i === currentSlide) {
+          content.classList.remove('animate-fade-up');
+          void content.offsetWidth;
+          content.classList.add('animate-fade-up');
+        }
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    function restartSlider() {
+      clearInterval(sliderTimer);
+      sliderTimer = setInterval(nextSlide, 6500);
+    }
+
+    nextButton.addEventListener('click', () => {
+      nextSlide();
+      restartSlider();
+    });
+
+    prevButton.addEventListener('click', () => {
+      prevSlide();
+      restartSlider();
+    });
+
+    showSlide(0);
+    restartSlider();
+
+    // ===== SCROLL REVEAL =====
+    const revealElements = document.querySelectorAll('.reveal');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12
+    });
+
+    revealElements.forEach((element) => revealObserver.observe(element));
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const animatedCards = document.querySelectorAll('.department-card, .award-card');
+      animatedCards.forEach((card) => card.classList.add('is-visible'));
+    });
+  </script>
+</body>
+</html>

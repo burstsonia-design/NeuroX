@@ -1,0 +1,7 @@
+
+FROM ubuntu:24.04
+COPY test.text
+ENV MESSAGE=" un mesaj"
+RUN echo $MESSAGE >> test.txt
+ENTRYPOINT ["cat", "test.txt"]
+
